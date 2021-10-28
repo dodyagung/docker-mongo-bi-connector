@@ -1,5 +1,7 @@
 FROM ubuntu:focal
 
+ENV TZ=Asia/Jakarta
+
 ENV MONGO_URI=localhost
 ENV MONGO_PORT=27017
 
@@ -10,6 +12,7 @@ WORKDIR /root
 
 RUN apt update && apt install -y \
     libgssapi-krb5-2 \
+    tzdata \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
