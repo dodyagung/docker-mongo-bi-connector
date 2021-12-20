@@ -22,10 +22,10 @@ RUN tar -xvzf mongodb-bi-linux-x86_64-ubuntu2004-v${MONGO_BI_VERSION}.tgz && \
     rm mongodb-bi-linux-x86_64-ubuntu2004-v${MONGO_BI_VERSION}.tgz
 RUN install -m755 mongodb-bi-linux-x86_64-ubuntu2004-v${MONGO_BI_VERSION}/bin/mongo* /usr/bin/
 
-# Using self-signed SSL
-RUN openssl req -nodes -newkey rsa:2048 -keyout selfsign.key -out selfsign.crt -x509 -days 365 \
+# Using self-signed SSL certificate
+RUN openssl req -nodes -newkey rsa:2048 -keyout self-signed-ssl-certificate.key -out self-signed-ssl-certificate.crt -x509 -days 365 \
     -subj "/C=US/ST=test/L=test/O=test Security/OU=IT Department/CN=test.com" \
-    && cat selfsign.crt selfsign.key > selfsign.pem
+    && cat self-signed-ssl-certificate.crt self-signed-ssl-certificate.key > self-signed-ssl-certificate.pem
 
 EXPOSE 3307
 
@@ -33,7 +33,7 @@ CMD exec mongosqld \
     --auth \
     --addr 0.0.0.0 \
     --sslMode allowSSL \
-    --sslPEMKeyFile=selfsign.pem \
+    --sslPEMKeyFile=self-signed-ssl-certificate.pem \
     --defaultAuthSource ${MONGO_DB} \
     --mongo-uri mongodb://${MONGO_URI}:${MONGO_PORT} \
     --mongo-authenticationSource ${MONGO_DB} \
